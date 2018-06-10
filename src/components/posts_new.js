@@ -41,6 +41,26 @@ class PostsNew extends Component {
 
 }
 
+// Will receive an object with the values of each Field
+function validate(values) {
+  const error = {}
+
+  if (!values.title) {
+      error.title = "Enter a title";
+  }
+
+  if (!values.categories) {
+      error.categories = "Enter some categories";
+  }
+
+  if (!values.const) {
+      error.content = "Enter some content";
+  }
+
+  return error;
+}
+
 export default reduxForm({
-  form: 'PostNewForm'
+  form: 'PostNewForm',
+  validate: validate
 })(PostsNew);
