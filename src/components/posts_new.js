@@ -1,16 +1,25 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+
+import { createPosts } from '../actions';
 
 class PostsNew extends Component {
 
   render() {
+
+    // this come from wiring up the component with redux-form
+    const { handleSubmit } = this.props;
+
     return (
-      <form>
+      <form onSubmit={ handleSubmit( this.onSubmit.bind(this) ) } >
         <Field
             label="Title"
             name="title"
             component={ this.renderField }
         />
+
         <Field
           label="Categories"
           name="categories"
@@ -23,18 +32,38 @@ class PostsNew extends Component {
           component={ this.renderField }
         />
 
+        <button type="submit"
+                className="btn btn-primary">
+                Submit
+        </button>
+
+        <Link to="/" className="btn btn-danger">
+          Cancel
+        </Link>
+
       </form>
     );
   }
 
+  onSubmit(values) {
+    this.props.createPosts(values);
+  }
+
   renderField(field) {
+    // ES6 destructuring field.meta.touched and field.meta.error
+    const { meta: { touched, error } } = field;
+    const className = `form-group ${ touched && error ? 'has-danger' : '' }`;
+
     return (
-      <div className="form-group" >
+      <div className={ className } >
         <label>{ field.label }</label>
         <input className="form-control"
           type="text"
           { ...field.input }
         />
+        <div className="text-help">
+          { touched ? error : ''}
+        </div>
       </div>
     );
   }
@@ -53,7 +82,7 @@ function validate(values) {
       error.categories = "Enter some categories";
   }
 
-  if (!values.const) {
+  if (!values.content) {
       error.content = "Enter some content";
   }
 
@@ -63,4 +92,6 @@ function validate(values) {
 export default reduxForm({
   form: 'PostNewForm',
   validate: validate
-})(PostsNew);
+})(
+  connect(null, { createPosts } ) (PostsNew)
+);
