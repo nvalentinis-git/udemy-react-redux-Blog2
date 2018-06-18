@@ -46,7 +46,8 @@ class PostsNew extends Component {
   }
 
   onSubmit(values) {
-    this.props.createPosts(values);
+    this.props.createPosts(values)
+      .then( () => this.props.history.push('/') );
   }
 
   renderField(field) {
